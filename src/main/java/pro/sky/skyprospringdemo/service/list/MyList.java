@@ -2,13 +2,17 @@ package pro.sky.skyprospringdemo.service.list;
 
 import pro.sky.skyprospringdemo.data.Person;
 
-public class MyList {
-    Node head;
-    Node tail;
+public class MyList<T> {
+    Node<T> head;
+    Node<T> tail;
     int size;
 
-    public boolean add(Person item) {
-        Node newNode = new Node();
+    public int size() {
+        return size;
+    }
+
+    public boolean add(T item) {
+        Node<T> newNode = new Node<>();
         newNode.setItem(item);
         if (tail == null) {
             head = newNode;
@@ -20,17 +24,17 @@ public class MyList {
         return true;
     }
 
-    public Person get(int index) {
+    public T get(int index) {
         if (checkIndex(index)) {
-            Node currentNode = getNode(index);
+            Node<T> currentNode = getNode(index);
             return currentNode.getItem();
         } else {
             throw new IndexOutOfBoundsException();
         }
     }
 
-    private Node getNode(int index) {
-        Node currentNode = head;
+    private Node<T> getNode(int index) {
+        Node<T> currentNode = head;
         for (int i = 0; i < index; i++) {
             currentNode = currentNode.getNext();
         }
@@ -41,9 +45,9 @@ public class MyList {
         return index >= 0 && index < size;
     }
 
-    public Person remove(int index) {
+    public T remove(int index) {
         if (checkIndex(index)) {
-            Node deleteNode;
+            Node<T> deleteNode;
             if (index == 0) {
                 deleteNode = head;
                 head = head.getNext();
@@ -51,9 +55,9 @@ public class MyList {
                     tail = null;
                 }
             } else {
-                Node prevNode = getNode(index - 1);
+                Node<T> prevNode = getNode(index - 1);
                 deleteNode = prevNode.getNext();
-                Node nextNode = deleteNode.getNext();
+                Node<T> nextNode = deleteNode.getNext();
                 prevNode.setNext(nextNode);
                 if (nextNode == null) {
                     tail = prevNode;
@@ -66,8 +70,6 @@ public class MyList {
         }
     }
 
-    public int size() {
-        return size;
-    }
+
 }
 

@@ -10,12 +10,12 @@ import pro.sky.skyprospringdemo.service.list.MyList;
 @Service
 public class PersonServiceImpl implements PersonService {
 
-    MyList persons;
+    MyList<Person> persons;
 
     int pinCode = 1234;
 
     public PersonServiceImpl() {
-        this.persons = new MyList();
+        this.persons = new MyList<>();
         persons.add(new Person("Олег Хлебушек", true));
 //        Это одно и тоже означает:
 //        Person olegPerson = new Person("Олег Хлебушек", true);
