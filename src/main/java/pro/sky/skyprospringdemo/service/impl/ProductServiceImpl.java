@@ -22,7 +22,6 @@ public class ProductServiceImpl implements ProductService {
         products.add(new Product("техника", "телефон"));
         products.add(new Product("еда", "йогурт"));
         products.add(new Product("техника", "планшет"));
-        products.add(new Product("еда", "колбаса"));
     }
 
     @Override
@@ -62,6 +61,8 @@ public class ProductServiceImpl implements ProductService {
 //        return searchResult.size();
         return count;                             //добавили счетчик заместо нового массива
     }
+
+
 
     @Override
     public boolean containsProduct(String name, String type) {

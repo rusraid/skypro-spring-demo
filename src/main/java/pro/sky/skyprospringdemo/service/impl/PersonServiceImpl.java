@@ -7,28 +7,44 @@ import pro.sky.skyprospringdemo.exceptions.WrongPinCodeException;
 import pro.sky.skyprospringdemo.service.PersonService;
 import pro.sky.skyprospringdemo.service.list.MyList;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Service
 public class PersonServiceImpl implements PersonService {
 
-    MyList<Person> persons;
+    Map<Integer, Person> persons;
 
     int pinCode = 1234;
 
+    Integer nextId = 0;
+
     public PersonServiceImpl() {
-        this.persons = new MyList<>();
-        persons.add(new Person("Олег Хлебушек", true));
+        this.persons = new HashMap<>();
 //        Это одно и тоже означает:
 //        Person olegPerson = new Person("Олег Хлебушек", true);
 //        persons.add(olegPerson);
-        persons.add(new Person("Анна Макаронина", false));
-        persons.add(new Person("Булат Баурсак", false));
-        persons.add(new Person("Игорь Карамелька", false));
-        persons.add(new Person("Пахлава Иванова", true));
+        persons.put(getNextId(), new Person("Олег Хлебушек", true));
+        persons.put(getNextId(), new Person("Анна Макаронина", false));
+        persons.put(getNextId(), new Person("Булат Баурсак", false));
+        persons.put(getNextId(), new Person("Игорь Карамелька", false));
+        persons.put(getNextId(), new Person("Пахлава Иванова", true));
+    }
+
+    private Integer getNextId() {
+        Integer result = nextId;
+        nextId = nextId +1;
+        return result;
     }
 
     @Override
-    public String getPerson(Integer id) {
-        if (persons.size() > id) {
+    public Person getPerson(Integer id) {
+        return persons.get(id);
+    }
+
+    @Override
+    public String getPersonName(Integer id) {
+        if (persons.containsKey(id)) {
             try {
                 return getPersonWithoutPinCode(id);
             } catch (NoAccessToPersonException exception) {
@@ -36,7 +52,6 @@ public class PersonServiceImpl implements PersonService {
             }
         } else {
             return getNotFoundMessage(id);
-
         }
     }
 
@@ -49,17 +64,20 @@ public class PersonServiceImpl implements PersonService {
     }
 
     @Override
-    public String getPersonWithPinCod(Integer id, int pinCode) {
-        if (this.pinCode == pinCode) {
+    public String getPersonNameWithPinCod(Integer id, int pinCode) {
+        if (persons.containsKey(id)) {
+            if (this.pinCode == pinCode) {
+                throw new WrongPinCodeException();
+            }
             return persons.get(id).getName();
         } else {
-            throw new WrongPinCodeException();
+            return getNotFoundMessage(id);
         }
     }
 
     @Override
     public String updatePerson(String name, Boolean block, Integer id) {
-        if (persons.size() > id) {
+        if (persons.containsKey(id)) {
             Person person = persons.get(id);
             if (!person.isBlock()) {
                 person.setName(name);
@@ -75,13 +93,13 @@ public class PersonServiceImpl implements PersonService {
 
     @Override
     public String addPerson(String name, Boolean block) {
-        persons.add(new Person(name, block));
+        persons.put(getNextId(), new Person(name, block));
         return name;
     }
 
     @Override
     public String removePerson(Integer id) {
-        if (persons.size() > id) {
+        if (persons.containsKey(id)) {
             return persons.remove(id).getName();
         } else {
             return getNotFoundMessage(id);
